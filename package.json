@@ -1,6 +1,9 @@
 {
-  "dependencies": {
-    "html-get": "^2.9.16",
-    "puppeteer": "^14.1.0"
-  }
+    "dependencies": {
+        "browserless": "^9.3.18",
+        "html-get": "^2.9.16",
+        "node-html-parser": "^5.3.3",
+        "puppeteer": "^14.1.0"
+    },
+    "type": "module"
 }
