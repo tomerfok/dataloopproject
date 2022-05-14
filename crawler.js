@@ -25,18 +25,21 @@ const getContent = async url => {
     return result;
 };
 
-const dom = new JSDOM(url, { includeNodeLocations: true });
+// url
+const dom = new JSDOM('<a href="www.example.com"></a>', { includeNodeLocations: true });
 const document = dom.window.document;
-const hrefEl = document.querySelectorAll("href");
-const imgEl = document.querySelectorAll("img");
+const hrefEl = document.querySelector('a');
+const imgEl = document.querySelectorAll('img');
 
-
+console.log(imgEl);
 getContent(url)
     .then(content => {
         content = content;
         console.log(content);
 
         root = parse(content.html);
+        const imgEle = root.text.querySelectorAll('img');
+
         console.log(root);
 
         process.exit();
