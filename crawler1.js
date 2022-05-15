@@ -1,25 +1,43 @@
-import cup from "crawler-url-parser";
+import Crawler from "crawler";
 import getImageUrls from "get-image-urls";
 
 let args = process.argv.slice(2);
 const url = args[0];
 const depth = +args[1];
 
-let htmlStr = '<html><body> \
-    <a href="http://best.question.stackoverflow.com">subdomain</a><br /> \
-    <a href="http://faq.stackoverflow.com">subdomain</a><br /> \
-    <a href="http://stackoverflow.com">updomain</a><br /> \
-    <a href="http://www.google.com">external</a><br /> \
-    <a href="http://www.facebook.com">external</a><br /> \
-    <a href="http://question.stackoverflow.com/aaa/bbb/ccc">sublevel</a><br /> \
-    <a href="http://question.stackoverflow.com/aaa/bbb/zzz">sublevel</a><br /> \
-    <a href="http://question.stackoverflow.com/aaa/">uplevel</a><br /> \
-    <a href="http://question.stackoverflow.com/aaa/ddd">samelevel</a><br /> \
-    <a href="http://question.stackoverflow.com/aaa/eee">samelevel</a><br /> \
-    <a href="http://question.stackoverflow.com/aaa/ddd/eee">internal</a><br /> \
-    <a href="http://question.stackoverflow.com/zzz">internal</a><br /> \
-</body></html>';
-let urls = cup.extract(htmlStr, 'https://stackoverflow.com/');
+let c = new Crawler({
+    maxConnections: depth,
+    callback: (error, res, done) => {
+        if (error) {
+            console.log(error);
+        } else {
+            var $ = res.$;
+            console.log($("title").text());
+        }
+        done();
+    }
+});
+
+c.queue([{
+    uri: url,
+    jQuery: false,
+    callback: (error, res, done) => {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Grabbed', res.body.length, 'bytes');
+        }
+        done();
+    },
+}])
+
+// .then((error, res, done) => {
+//     var $ = res.$;
+//     console.log($("title").text());
+// })
+// .catch((e) => {
+//     console.log('ERROR', e);
+// });
 
 getImageUrls(url)
     .then((images) => {
