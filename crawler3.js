@@ -29,7 +29,7 @@ const extractImages = async(url) => {
     }
 };
 
-// Extracts child links from url and pushes them to global links, together with depth attribute
+// Extracts child links from url and returns links, together with depth attribute
 const extractLinks = async(url, depth) => {
     try {
         const response = await got(url);
@@ -40,6 +40,10 @@ const extractLinks = async(url, depth) => {
         let linksReturned = [];
         linkObjects.each((index, element) => {
             linksReturned.push({
+                depth: depth,
+                href: $(element).attr('href'),
+            });
+            links.push({
                 depth: depth,
                 href: $(element).attr('href'),
             });
@@ -77,13 +81,13 @@ urls = links;
 // Pass over links and extract child links
 for (let depthPointer = 1; depthPointer < depth; depthPointer++) {
     // Extracts child links and pushes them to global links
-    links = extractLinksFromURLs(links, depthPointer);
+    links = await extractLinksFromURLs(links, depthPointer);
     urls.concat(links);
 }
 
 let images = []
 for (let link = 0; link < links; link++) {
-    let images_list = []
+    let images_list = [];
     extractImages(links[link]).then(val => images_list = val.slice());
     images.concat(images_list);
 }
